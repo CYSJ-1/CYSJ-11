@@ -1,0 +1,1763 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f2ecdf">
+<meta name="format-detection" content="telephone=no">
+<title>雨夜留声 · 文字推理</title>
+<style>
+:root{
+  --paper:#f2ecdf;
+  --paper-2:#fbf7ee;
+  --paper-3:#f7f0e3;
+  --ink:#211d18;
+  --ink-soft:#443c32;
+  --muted:#776b5d;
+  --line:#d8cab6;
+  --line-soft:#e6dbc9;
+  --accent:#8b3a2e;
+  --accent-dark:#6f2a21;
+  --accent-soft:#f0dfd7;
+  --shadow:0 8px 24px rgba(60,44,26,.08);
+  --radius:16px;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 12% 6%,rgba(255,255,255,.78),transparent 34%),
+    radial-gradient(circle at 86% 84%,rgba(196,174,140,.16),transparent 46%),
+    var(--paper);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  font-size:18px;
+  line-height:1.85;
+}
+body.modal-open{overflow:hidden}
+::selection{background:var(--accent-soft);color:var(--ink)}
+.rain{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background-image:repeating-linear-gradient(102deg,rgba(54,71,84,.09) 0,rgba(54,71,84,.09) 1px,transparent 1px,transparent 28px);
+  opacity:.18;
+  animation:rainShift 24s linear infinite;
+}
+.rain:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse at 50% 0%,transparent 42%,rgba(50,37,23,.10) 100%);
+}
+@keyframes rainShift{
+  from{transform:translate3d(0,-3%,0)}
+  to{transform:translate3d(-2%,3%,0)}
+}
+#topbar{
+  position:sticky;
+  top:0;
+  z-index:20;
+  padding:10px 16px;
+  padding-top:calc(10px + var(--safe-top));
+  background:rgba(242,236,223,.97);
+  border-bottom:1px solid rgba(139,58,46,.16);
+}
+.header-inner{
+  display:flex;
+  align-items:center;
+  width:100%;
+  max-width:700px;
+  margin:0 auto;
+}
+.back{
+  display:none;
+  flex:0 0 40px;
+  width:40px;
+  height:40px;
+  margin-right:8px;
+  padding:0;
+  border:1px solid var(--line);
+  border-radius:50%;
+  background:var(--paper-2);
+  color:var(--ink-soft);
+  font-size:21px;
+  line-height:1;
+  cursor:pointer;
+  -webkit-appearance:none;
+  appearance:none;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+.back:active{background:#fffaf0}
+.brand{
+  flex:1 1 auto;
+  min-width:0;
+  font-family:"Songti SC","STSong","SimSun","Noto Serif CJK SC",serif;
+  font-size:18px;
+  font-weight:600;
+  letter-spacing:.12em;
+  line-height:1.2;
+  white-space:nowrap;
+}
+.brand small{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  font-size:9px;
+  font-weight:400;
+  letter-spacing:.28em;
+}
+.header-actions{
+  display:flex;
+  align-items:center;
+  flex:0 0 auto;
+  margin-left:8px;
+}
+.tool{
+  display:none;
+  align-items:center;
+  min-height:40px;
+  margin-left:7px;
+  padding:6px 11px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:var(--paper-2);
+  color:var(--ink-soft);
+  font-family:inherit;
+  font-size:13px;
+  line-height:1;
+  white-space:nowrap;
+  cursor:pointer;
+  -webkit-appearance:none;
+  appearance:none;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+.tool:active{background:#fffaf0}
+.tool b{
+  margin-left:5px;
+  color:var(--accent);
+  font-weight:600;
+  font-variant-numeric:tabular-nums;
+}
+main{
+  position:relative;
+  z-index:1;
+  width:100%;
+  max-width:700px;
+  margin:0 auto;
+  padding:24px 20px 46px;
+  padding-bottom:calc(46px + var(--safe-bottom));
+}
+.screen{animation:rise .28s ease-out}
+@keyframes rise{
+  from{opacity:0;transform:translateY(7px)}
+  to{opacity:1;transform:none}
+}
+.kicker{
+  margin:0 0 8px;
+  color:var(--accent);
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.22em;
+  line-height:1.5;
+}
+h1,h2,h3,p{margin-top:0}
+.display{
+  margin:0 0 8px;
+  font-family:"Songti SC","STSong","SimSun","Noto Serif CJK SC",serif;
+  font-size:48px;
+  font-weight:600;
+  letter-spacing:.12em;
+  line-height:1.16;
+}
+.display.small{font-size:40px}
+.subtitle{
+  margin:0 0 22px;
+  color:var(--muted);
+  font-size:14px;
+  letter-spacing:.18em;
+}
+h2{
+  margin:0 0 14px;
+  font-family:"Songti SC","STSong","SimSun","Noto Serif CJK SC",serif;
+  font-size:27px;
+  font-weight:600;
+  letter-spacing:.05em;
+  line-height:1.35;
+}
+.hub-title{
+  margin:0 0 12px;
+  font-family:"Songti SC","STSong","SimSun","Noto Serif CJK SC",serif;
+  font-size:28px;
+  font-weight:600;
+  letter-spacing:.03em;
+  line-height:1.4;
+}
+.prose p{
+  margin:0 0 .9em;
+  text-align:justify;
+  text-justify:inter-ideograph;
+}
+.prose p:last-child{margin-bottom:0}
+.prose .dialogue{
+  padding-left:13px;
+  border-left:2px solid rgba(139,58,46,.28);
+  color:#2d2720;
+}
+.time-mark{
+  margin:26px 0 10px;
+  color:var(--accent);
+  font-family:"Songti SC","STSong","SimSun","Noto Serif CJK SC",serif;
+  font-size:18px;
+  font-weight:600;
+  letter-spacing:.08em;
+  line-height:1.4;
+}
+.note{
+  color:var(--muted);
+  font-size:13.5px;
+  line-height:1.7;
+}
+.note.center{text-align:center}
+.seal{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:46px;
+  height:46px;
+  margin:4px 0 18px;
+  border-radius:7px;
+  background:var(--accent);
+  color:#fff7ec;
+  box-shadow:0 5px 14px rgba(139,58,46,.22);
+  font-family:"Songti SC","STSong","SimSun",serif;
+  font-size:25px;
+  line-height:1;
+  transform:rotate(-3deg);
+}
+.rule-line{
+  width:100%;
+  height:1px;
+  margin:20px 0 22px;
+  background:linear-gradient(90deg,transparent,var(--line) 12%,var(--line) 88%,transparent);
+}
+.actions{margin-top:22px}
+.section-title{
+  display:flex;
+  align-items:center;
+  margin:27px 0 12px;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.22em;
+  line-height:1.4;
+}
+.section-title span{flex:0 0 auto}
+.section-title:after{
+  content:"";
+  flex:1 1 auto;
+  height:1px;
+  margin-left:12px;
+  background:var(--line);
+}
+.choice{
+  display:flex;
+  align-items:center;
+  width:100%;
+  min-height:54px;
+  margin:0 0 10px;
+  padding:13px 15px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:rgba(255,252,246,.82);
+  color:var(--ink);
+  box-shadow:0 2px 0 rgba(80,60,40,.03);
+  font-family:inherit;
+  font-size:17px;
+  line-height:1.5;
+  text-align:left;
+  cursor:pointer;
+  -webkit-appearance:none;
+  appearance:none;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .12s ease,background .12s ease,border-color .12s ease;
+}
+.choice:active{
+  transform:scale(.985);
+  border-color:#c9b9a2;
+  background:#fffaf0;
+}
+.choice-label{flex:1 1 auto;min-width:0;overflow-wrap:break-word}
+.chev{
+  flex:0 0 auto;
+  margin-left:10px;
+  color:var(--accent);
+  font-size:22px;
+  line-height:1;
+  opacity:.75;
+}
+.badge{
+  flex:0 0 auto;
+  margin-left:8px;
+  padding:2px 7px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  color:var(--muted);
+  font-size:10.5px;
+  line-height:1.5;
+  white-space:nowrap;
+}
+.choice.primary{
+  border-color:var(--accent);
+  background:var(--accent);
+  color:#fff8ee;
+  box-shadow:0 7px 18px rgba(139,58,46,.18);
+}
+.choice.primary:active{background:var(--accent-dark)}
+.choice.primary .chev{color:#fff8ee}
+.choice.primary .badge{border-color:rgba(255,255,255,.38);color:#fff8ee}
+.choice.ghost{
+  justify-content:center;
+  min-height:44px;
+  border-color:transparent;
+  background:transparent;
+  box-shadow:none;
+  color:var(--muted);
+  font-size:15px;
+  text-align:center;
+}
+.choice.ghost:active{background:rgba(139,58,46,.05)}
+.card{
+  margin:0 0 16px;
+  padding:16px;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  background:rgba(255,252,246,.72);
+  box-shadow:var(--shadow);
+}
+.person{
+  padding:15px 0;
+  border-bottom:1px solid var(--line-soft);
+}
+.person:first-child{padding-top:0}
+.person:last-child{padding-bottom:0;border-bottom:0}
+.person-name{
+  margin:0 0 6px;
+  font-family:"Songti SC","STSong","SimSun","Noto Serif CJK SC",serif;
+  font-size:21px;
+  font-weight:600;
+  letter-spacing:.06em;
+  line-height:1.3;
+}
+.person-role{
+  margin-left:7px;
+  color:var(--accent);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:.08em;
+}
+.person p{
+  margin:0;
+  color:var(--ink-soft);
+  font-size:15.5px;
+  line-height:1.75;
+}
+.rules{
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+.rules li{
+  position:relative;
+  margin:0 0 11px;
+  padding-left:17px;
+  color:var(--ink-soft);
+  font-size:16px;
+  line-height:1.75;
+}
+.rules li:last-child{margin-bottom:0}
+.rules li:before{
+  content:"·";
+  position:absolute;
+  left:2px;
+  top:0;
+  color:var(--accent);
+  font-weight:700;
+}
+.clue-card{
+  margin:16px 0;
+  padding:12px 14px;
+  border:1px solid #e2d2ba;
+  border-left:4px solid var(--accent);
+  border-radius:10px;
+  background:#fbf4e8;
+}
+.clue-kicker{
+  margin-bottom:4px;
+  color:var(--accent);
+  font-size:10.5px;
+  font-weight:600;
+  letter-spacing:.14em;
+  line-height:1.5;
+}
+.clue-card p{
+  margin:0;
+  color:#3a3027;
+  font-size:15.5px;
+  line-height:1.7;
+  text-align:left;
+}
+.steps{
+  display:flex;
+  align-items:center;
+  margin:2px 0 18px;
+}
+.steps span{
+  width:7px;
+  height:7px;
+  margin-right:7px;
+  border-radius:50%;
+  background:var(--line);
+}
+.steps span.done{background:#b7836f}
+.steps span.on{background:var(--accent)}
+.question{
+  margin:16px 0 14px;
+  color:var(--ink);
+  font-size:18px;
+  font-weight:600;
+  line-height:1.6;
+}
+.summary{
+  margin:18px 0;
+  padding:14px 16px;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  background:rgba(255,252,246,.76);
+  box-shadow:var(--shadow);
+}
+.summary-row{
+  display:flex;
+  padding:9px 0;
+  border-bottom:1px dashed var(--line);
+  font-size:15px;
+  line-height:1.7;
+}
+.summary-row:last-child{border-bottom:0;padding-bottom:0}
+.summary-row:first-child{padding-top:0}
+.summary-label{
+  flex:0 0 92px;
+  color:var(--muted);
+  font-size:13px;
+  letter-spacing:.06em;
+}
+.summary-value{flex:1 1 auto;min-width:0;color:var(--ink-soft);overflow-wrap:break-word}
+.summary.stats .summary-label{flex-basis:80px}
+.rank{
+  margin:18px 0 6px;
+  color:var(--accent);
+  font-family:"Songti SC","STSong","SimSun",serif;
+  font-size:17px;
+  text-align:center;
+}
+.thanks{
+  margin:8px 0 18px;
+  color:var(--muted);
+  font-size:14px;
+  letter-spacing:.08em;
+  text-align:center;
+}
+.footnote{
+  margin:26px 0 0;
+  color:var(--muted);
+  font-size:11px;
+  letter-spacing:.1em;
+  text-align:center;
+}
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:none;
+  background:rgba(28,22,16,.44);
+}
+.modal.open{display:flex;align-items:flex-end;justify-content:center}
+.sheet{
+  display:flex;
+  flex-direction:column;
+  width:100%;
+  max-width:700px;
+  max-height:86vh;
+  padding-bottom:var(--safe-bottom);
+  border-radius:22px 22px 0 0;
+  background:var(--paper-2);
+  box-shadow:0 -12px 42px rgba(0,0,0,.22);
+  animation:sheetUp .24s ease-out;
+}
+@keyframes sheetUp{
+  from{opacity:.65;transform:translateY(18px)}
+  to{opacity:1;transform:none}
+}
+.sheet-head{
+  display:flex;
+  align-items:center;
+  padding:16px 18px 10px;
+  border-bottom:1px solid var(--line);
+}
+.sheet-title{
+  flex:1 1 auto;
+  min-width:0;
+  font-family:"Songti SC","STSong","SimSun",serif;
+  font-size:22px;
+  font-weight:600;
+  letter-spacing:.06em;
+  line-height:1.35;
+}
+.sheet-close{
+  flex:0 0 42px;
+  width:42px;
+  height:42px;
+  margin-left:8px;
+  padding:0;
+  border:1px solid var(--line);
+  border-radius:50%;
+  background:transparent;
+  color:var(--muted);
+  font-size:22px;
+  line-height:1;
+  cursor:pointer;
+  -webkit-appearance:none;
+  appearance:none;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+.sheet-close:active{background:#fffaf0}
+.sheet-body{
+  padding:16px 18px;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.sheet-foot{
+  padding:10px 18px 14px;
+  border-top:1px solid var(--line);
+}
+.sheet-foot .choice{margin-bottom:0}
+.sheet-count{
+  margin-bottom:8px;
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:.08em;
+}
+.note-group{margin:0 0 19px}
+.note-group:last-child{margin-bottom:0}
+.note-group h4{
+  margin:0 0 8px;
+  color:var(--accent);
+  font-size:10.5px;
+  font-weight:600;
+  letter-spacing:.2em;
+  line-height:1.5;
+}
+.note-item{
+  display:flex;
+  margin:0 0 9px;
+  color:var(--ink-soft);
+  font-size:15px;
+  line-height:1.7;
+}
+.note-num{
+  flex:0 0 23px;
+  color:var(--muted);
+  font-size:13px;
+  font-variant-numeric:tabular-nums;
+}
+.hint-text{
+  margin:0 0 14px;
+  color:var(--ink);
+  font-size:17px;
+  line-height:1.8;
+}
+.hint-meta{
+  margin:0 0 10px;
+  color:var(--accent);
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.16em;
+}
+@media (min-width:720px){
+  #topbar{padding-left:24px;padding-right:24px}
+  main{padding-top:34px}
+  .choice:hover{background:#fffaf0;border-color:#c9b9a2}
+  .choice.primary:hover{background:var(--accent-dark)}
+  .modal.open{align-items:center}
+  .sheet{border-radius:22px;margin-bottom:24px}
+}
+@media (max-width:360px){
+  body{font-size:17px}
+  main{padding-left:16px;padding-right:16px}
+  #topbar{padding-left:12px;padding-right:12px}
+  .brand{font-size:16px;letter-spacing:.08em}
+  .back{flex-basis:40px;width:40px;height:40px;margin-right:6px}
+  .tool{min-height:40px;margin-left:5px;padding:6px 9px;font-size:11.5px}
+  .display{font-size:41px}
+  .display.small{font-size:34px}
+  h2{font-size:24px}
+  .hub-title{font-size:25px}
+  .choice{font-size:16px;padding:12px 13px}
+  .person-role{display:block;margin:4px 0 0}
+}
+@media (prefers-reduced-motion:reduce){
+  .screen,.sheet,.rain{animation:none}
+}
+</style>
+</head>
+<body>
+<div class="rain" aria-hidden="true"></div>
+<header id="topbar">
+  <div class="header-inner">
+    <button id="backBtn" class="back" type="button" aria-label="返回">←</button>
+    <div class="brand">雨夜留声<small>文字推理</small></div>
+    <div class="header-actions">
+      <button id="noteBtn" class="tool" type="button">笔记 <b id="noteCount">2</b></button>
+      <button id="hintBtn" class="tool" type="button">提示</button>
+    </div>
+  </div>
+</header>
+<main id="app" aria-live="polite"></main>
+<div id="modal" class="modal" aria-hidden="true"></div>
+<noscript><p style="padding:24px;text-align:center">请开启 JavaScript 后游玩《雨夜留声》。</p></noscript>
+<script>
+var DATA = {
+  clues: {
+    self_alibi: {cat:'已知', text:'21:40 枪响时，你、沈青禾、罗坤在客厅打牌；沈青禾坐在你对面。'},
+    self_absence: {cat:'已知', text:'21:35 沈青禾说去拿披肩，离开约四分钟，回来时有些喘。'},
+    watch: {cat:'时间', text:'死者腕表停在 21:05，表蒙向内碎裂，手腕有淤青。'},
+    gunshot: {cat:'现场', text:'左胸枪伤周围没有火药灼痕，枪口距离较远，不是自杀。'},
+    will: {cat:'动机', text:'今天下午的新遗嘱把山庄捐给基金会，沈只得到生活费；遗嘱由沈打字。'},
+    forgery: {cat:'动机', text:'账本里有沈青禾伪造的三千元签名，陆批注：明早问她。'},
+    gun_drawer: {cat:'现场', text:'书桌抽屉没有撬痕，枪套空了；凶手知道枪放在哪里。'},
+    record: {cat:'现场', text:'留声机里是《雷雨》音效盘，最后一段是枪声；唱针停在收尾槽。'},
+    fiber: {cat:'现场', text:'留声机摇柄上有一根深红色羊毛纤维。'},
+    fiber_match: {cat:'现场', text:'摇柄上的纤维与沈青禾开衫袖口的断口吻合。'},
+    fire: {cat:'时间', text:'书房壁炉被添了三大根松木，室温 28°C，尸冷会变慢。'},
+    door: {cat:'现场', text:'书房门是弹簧锁，带上就锁；窗户从里面闩着。'},
+    muffled: {cat:'时间', text:'21:40 枪声很闷；枪响前楼上有持续的沙沙声。'},
+    backstairs: {cat:'现场', text:'厨房后门有一道后楼梯，能绕开客厅上二楼，通往书房走廊。'},
+    catalog: {cat:'人物', text:'沈青禾的目录写着《雷雨》音效盘第三面借出试听，未还。'},
+    debt: {cat:'动机', text:'沈青禾当掉了陆的唱片，欠“永利号”三千元，被威胁告诉舅舅。'},
+    cardigan: {cat:'人物', text:'沈青禾的深红色开衫袖口少了一截，断口很新。'},
+    suitcase: {cat:'人物', text:'沈青禾的床下有一只收拾好的皮箱和明天去上海的车票。'},
+    wine: {cat:'人物', text:'罗坤今晚在酒窖喝过酒；他说不清 21:05 的行踪。'},
+    sale: {cat:'动机', text:'陆鸿声要把山庄卖给许南枝的公司，罗坤可能被解雇。'},
+    shen_alibi: {cat:'人物', text:'沈青禾说 21:00–21:35 独自在房间，21:35 到客厅，21:40 在牌桌旁。'},
+    shen_records: {cat:'人物', text:'沈青禾负责整理陆鸿声的全部唱片，熟悉每一张的内容。'},
+    shen_denial: {cat:'人物', text:'面对纤维，沈青禾说是下午给唱片除尘时蹭到的。'},
+    shen_nervous: {cat:'人物', text:'提到枪声前的沙沙声时，沈青禾第一次露出慌乱。'},
+    gu_time: {cat:'时间', text:'顾行舟判断死亡时间在 21:20–21:50；高温会让尸冷变慢，实际可能更早。'},
+    radio: {cat:'时间', text:'顾行舟和许南枝在图书馆，收音机一直开着，盖住了 21:05 的枪声。'},
+    gu_motive: {cat:'动机', text:'陆鸿声曾用十年前的医疗事故要挟顾行舟。'},
+    letter: {cat:'动机', text:'顾行舟说陆鸿声给沈青禾留了后路：认错就不报警，还买了车票。'},
+    luo_alibi: {cat:'人物', text:'罗坤说 21:00–21:30 在地下室修发电机，21:30 到客厅。'},
+    thud: {cat:'时间', text:'罗坤在 21:05 左右听到一声闷响，以为是雷；他当时在酒窖喝酒。'},
+    xu_motive: {cat:'动机', text:'许南枝的父亲公司被陆鸿声吞并，晚餐时她威胁过他。'},
+    xu_alibi: {cat:'人物', text:'许南枝说 21:00–21:50 与顾行舟在图书馆，收音机开着。'},
+    affair: {cat:'人物', text:'许南枝承认与顾行舟有私情，两人的不在场证明互相依赖。'},
+    xu_saw: {cat:'人物', text:'许南枝在 21:35 看见沈青禾从后楼梯上楼，往书房方向走。'}
+  },
+
+  intro: {
+    story: [
+      '雨下了整整一夜。',
+      '民国二十五年，江南。听雨山庄建在半山腰，只有一条石桥与外界相连。晚上八点五十分，雷声滚过山脊，桥那头的电线闪了闪，整座山庄陷入黑暗。九点十分，备用发电机响了起来，但电话线已经断了。',
+      '九点以前，你一直待在自己的房间里看书。雨太大，你什么也没听见。',
+      '九点半，你下楼时，沈青禾和罗坤已经在牌桌旁。九点三十五，沈青禾说去拿披肩，离开了四五分钟。九点四十，她刚坐下发牌，楼上就传来一声闷响。',
+      '你们冲上楼。书房的门锁着，罗坤用肩膀撞开了它。壁炉里的火正旺，留声机还在转。陆鸿声倒在书桌和壁炉之间，左胸有一处枪伤。他左手腕上的表，停在九点零五分。',
+      '九点五十五，你重新回到书房。警察最早也要天亮才能上山。凶手就在这栋房子里。'
+    ]
+  },
+
+  people: {
+    shen: {
+      name: '沈青禾',
+      role: '二十六岁 · 外甥女兼秘书',
+      blurb: '父母早逝，由陆鸿声养大。她今晚穿一件深红色羊毛开衫。',
+      intro: [
+        '沈青禾坐在床沿，双手交叠放在膝上。她已经换下了那件深红色开衫，穿着一件素色旗袍。她很安静，眼睛有些红，但说话条理清楚。'
+      ]
+    },
+    gu: {
+      name: '顾行舟',
+      role: '四十二岁 · 医生 · 陆鸿声的老友',
+      blurb: '他检查了尸体，也是新遗嘱的见证人之一。',
+      intro: [
+        '顾行舟在书房外面的走廊里抽烟。他的医生箱放在脚边，箱扣没有扣好。他看起来很疲惫，但手很稳。'
+      ]
+    },
+    luo: {
+      name: '罗坤',
+      role: '五十岁 · 山庄管家',
+      blurb: '他在山庄干了三十年。是他撞开了书房的门。',
+      intro: [
+        '罗坤站在厨房门口，手里攥着一顶旧帽子。他的靴子上沾着泥，身上有酒气。他不敢看你的眼睛。'
+      ]
+    },
+    xu: {
+      name: '许南枝',
+      role: '三十五岁 · 生意伙伴',
+      blurb: '晚餐时，她刚和死者大吵过一架。',
+      intro: [
+        '许南枝坐在图书馆的扶手椅里，手里夹着一支没点的烟。她面前的茶几上放着一只空茶杯。她看着你，像在看一个迟到的人。'
+      ]
+    }
+  },
+
+  locations: {
+    study: {
+      name: '二楼书房',
+      tag: '案发现场',
+      hubLabel: '二楼书房（案发现场）',
+      desc: [
+        '壁炉里的火还在响。陆鸿声的尸体停在书桌和壁炉之间，像一句没写完的句子。空气里有一股淡淡的火药味。'
+      ],
+      actions: [
+        {id:'body', label:'检查尸体'},
+        {id:'desk', label:'检查书桌'},
+        {id:'gramophone', label:'检查留声机'},
+        {id:'fire', label:'检查壁炉'},
+        {id:'door', label:'检查门窗'}
+      ]
+    },
+    living: {
+      name: '一楼客厅',
+      tag: '一楼',
+      hubLabel: '一楼客厅',
+      desc: [
+        '客厅正上方就是书房。牌桌上摊着没打完的牌，壁炉里的火已经暗了。你、沈青禾、罗坤刚才就坐在这里。'
+      ],
+      actions: [
+        {id:'recall', label:'回想枪响前的声音'},
+        {id:'table', label:'检查牌桌与壁钟'},
+        {id:'route', label:'看看通往楼上的路'}
+      ]
+    },
+    shen: {
+      name: '沈青禾的房间',
+      tag: '东厢',
+      hubLabel: '沈青禾的房间',
+      desc: [
+        '东厢很小，收拾得过分整齐。床头放着一本《雷雨》的剧本，书页间夹着一张旧剧照。窗外是雨。屋里有一盏煤油灯，灯芯剪得很短。'
+      ],
+      actions: [
+        {id:'desk', label:'书桌与唱片目录'},
+        {id:'wardrobe', label:'衣柜'},
+        {id:'bedside', label:'床头与皮箱'}
+      ]
+    },
+    basement: {
+      name: '地下室与后楼梯',
+      tag: '地下室',
+      hubLabel: '地下室与后楼梯',
+      desc: [
+        '地下室潮湿，发电机在角落里轰鸣。煤油灯照出一排排旧木箱，空气里有酒味和机油味。后楼梯从厨房后面通上来，木阶很陡，扶手上积着一层薄灰。'
+      ],
+      actions: [
+        {id:'stairs', label:'后楼梯'},
+        {id:'wine', label:'酒窖'},
+        {id:'tools', label:'罗坤的工具间'}
+      ]
+    }
+  },
+
+  details: {
+    'study.body': {
+      title: '检查尸体',
+      paras: [
+        '陆鸿声仰面倒在壁炉前，深灰色的睡袍被血浸透。左胸的枪伤周围没有火药灼痕。顾行舟说过，这意味着枪口离他至少有一英尺——不是贴着皮肤开的枪。',
+        '他的左手腕上有一块银壳腕表。表蒙碎了，指针停在 21:05。表蒙的裂纹向里凹，手腕下面有一块淤青，像是摔倒时撞在桌脚上。',
+        '右手边扔着一把左轮手枪。枪是陆鸿声自己的，原本锁在书桌抽屉里。'
+      ],
+      clues: ['watch','gunshot']
+    },
+    'study.desk': {
+      title: '检查书桌',
+      paras: [
+        '书桌上摊着一份新遗嘱，墨迹已经干了。日期是今天下午，见证人是顾行舟和罗坤。遗嘱把听雨山庄和大部分收藏捐给“鸿声剧团基金会”；沈青禾只得到一笔按月支付的生活费。',
+        '书桌抽屉被拉开了，没有撬痕。里面原本放枪套，现在空了。枪套下面压着一本账本。账本里夹着一张银行催款单：三千元，签名是“沈青禾”。签名旁边有一行红笔字，是陆鸿声的笔迹：“伪造。明早问她。”',
+        '打字机旁有一张复写纸，上面是遗嘱的最后一页。沈青禾负责陆鸿声所有的文书。'
+      ],
+      clues: ['will','forgery','gun_drawer']
+    },
+    'study.gramophone': {
+      title: '检查留声机',
+      paras: [
+        '一台落地式留声机立在窗边，喇叭正对着门口。唱盘还在转，唱针停在最外圈的收尾槽里，发出沙沙的干响。',
+        '唱片是一张十二英寸的试音盘，标签上印着：“《雷雨》音效集 · 第三面：风雨 / 雷声 / 枪声”。这是鸿声剧团当年做的非卖品，市面上买不到。',
+        '唱片套不见了。音量旋钮被拧到最大。摇柄上挂着一根深红色羊毛纤维。'
+      ],
+      clues: ['record','fiber'],
+      after: function(add){
+        if (typeof add === 'function' && state.clues.cardigan && !state.clues.fiber_match) {
+          add('fiber_match');
+          return ['你想起沈青禾开衫袖口的断口。颜色、粗细都一样。'];
+        }
+        return [];
+      }
+    },
+    'study.fire': {
+      title: '检查壁炉',
+      paras: [
+        '壁炉里的火烧得极旺，松木噼啪作响。房间里闷热得反常，你的后背已经出了一层汗。炉膛里塞着三根还没烧透的松木，像是有人一次添进去的。墙上的温度计指着 28°C。'
+      ],
+      clues: ['fire']
+    },
+    'study.door': {
+      title: '检查门窗',
+      paras: [
+        '门是旧式的弹簧锁，从外面带上就会锁，不用钥匙。门框和锁舌都没有撬痕。钥匙还插在里面的锁孔里——但在这扇门上，钥匙只是用来反锁的，平时根本用不着。',
+        '窗户从里面闩着，窗台干燥。窗外是湿滑的陡坡，雨声里夹着碎石滚落的声音。'
+      ],
+      clues: ['door']
+    },
+    'living.recall': {
+      title: '回想枪响前的声音',
+      paras: [
+        '你闭上眼睛，把那一刻重新过了一遍。',
+        '九点三十五左右，沈青禾说去拿披肩。她走后，楼上似乎一直有一种沙沙的、像雨又不像雨的声音，从天花板的方向传下来。你当时以为那是风穿过瓦缝。',
+        '九点四十，枪响了。声音很闷，像隔着一层门板。'
+      ],
+      clues: ['muffled']
+    },
+    'living.table': {
+      title: '检查牌桌与壁钟',
+      paras: [
+        '牌桌上散着扑克牌。沈青禾的位置前放着一副没发完的牌。壁钟是机械的，停电后也没停。指针指着九点五十六。你想起枪响的时候，她刚坐下，手里还捏着那张没发出去的牌。',
+        '她回来时有些喘，说楼梯太暗，走快了。'
+      ],
+      clues: []
+    },
+    'living.route': {
+      title: '看看通往楼上的路',
+      paras: [
+        '客厅正对着主楼梯。从楼梯上去，往左是书房，往右是东厢。主楼梯的灯坏了，只有楼下一盏煤油灯照着。',
+        '你想起厨房后面还有一道后楼梯，也能上二楼，而且不用经过客厅。'
+      ],
+      clues: ['backstairs']
+    },
+    'shen.desk': {
+      title: '书桌与唱片目录',
+      paras: [
+        '桌上摊着一本厚厚的唱片目录。每一张唱片都有编号、来源和存放位置。最后一条写着：“《雷雨》音效集，第三面，借出试听（沈），未还。”日期是两天前。',
+        '目录下面压着一张当票：当品是陆鸿声珍藏的《空城计》唱片，当金二百元。旁边还有几封催债信，落款“永利号”。最后一封写着：“月底再不还三千，就把你的事告诉你舅舅。”'
+      ],
+      clues: ['catalog','debt']
+    },
+    'shen.wardrobe': {
+      title: '衣柜',
+      paras: [
+        '衣柜里挂着几件素色衣服。最外面是一件深红色羊毛开衫，袖口有一处新的勾线，少了一小截。断口很齐，像是被什么金属钩住后扯断的。',
+        '衣柜底层有一双布鞋，鞋面是湿的，鞋底沾着湿灰。'
+      ],
+      clues: ['cardigan'],
+      after: function(add){
+        if (typeof add === 'function' && state.clues.fiber && !state.clues.fiber_match) {
+          add('fiber_match');
+          return ['你想起留声机摇柄上的那根深红色纤维。'];
+        }
+        return [];
+      }
+    },
+    'shen.bedside': {
+      title: '床头与皮箱',
+      paras: [
+        '《雷雨》的剧本翻到第四幕。夹在里面的剧照上，年轻的陆鸿声穿着长衫站在舞台中央，旁边是一个眉眼像沈青禾的女人。照片背面写着一行褪色的字：“民国十七年，鸿声剧团。”',
+        '剧本的扉页上，有人用铅笔写了一行小字：“舅舅说，等这场雨停了，就送我去车站。”',
+        '床底下有一只小皮箱，已经收拾好了。最上面放着一张去上海的车票，日期是明天。'
+      ],
+      clues: ['suitcase']
+    },
+    'basement.stairs': {
+      title: '后楼梯',
+      paras: [
+        '木阶很陡，扶手上的灰被蹭掉了一道，像是有人最近匆匆走过。从后楼梯上去，左边是书房，右边是东厢。楼梯口有一扇小窗，雨丝从窗缝里飘进来，把最上面两级台阶打湿了。湿灰上有一枚不大的鞋印。'
+      ],
+      clues: ['backstairs']
+    },
+    'basement.wine': {
+      title: '酒窖',
+      paras: [
+        '酒窖的门虚掩着。架子上的酒少了几瓶，角落里藏着一只喝了一半的白兰地。瓶口没有灰尘，是今晚开的。'
+      ],
+      clues: ['wine']
+    },
+    'basement.tools': {
+      title: '罗坤的工具间',
+      paras: [
+        '工具间的墙上挂着一把油纸伞，伞面还在滴水。桌上摊着一张山庄出售合同的草稿，买方是许南枝的公司。合同最后一页有一行铅笔字：“新主人留用罗坤。”旁边是罗坤的笔迹：“留不留，谁知道。”'
+      ],
+      clues: ['sale']
+    }
+  },
+
+  topics: {
+    'shen.alibi': {
+      label: '今晚的行踪',
+      paras: [
+        '“吃完晚饭，舅舅说想一个人待着。我回房间整理唱片目录，一直到九点三十五。然后我去客厅，跟你们打牌。”她顿了一下。“枪响的时候，我就在你对面。你看见的。”'
+      ],
+      clues: ['shen_alibi']
+    },
+    'shen.will': {
+      label: '新遗嘱',
+      paras: [
+        '“舅舅下午改了遗嘱。我是他的秘书，当然知道。”她看着自己的手。“他把山庄捐给基金会，只给我每月的生活费。他说我不争气。也许他说得对。”'
+      ],
+      clues: []
+    },
+    'shen.records': {
+      label: '唱片',
+      paras: [
+        '“舅舅的唱片都是我整理的。剧团的老录音、音效盘，还有一些孤本。最近我在给它们编目。”她抬起眼睛。“怎么了？唱片有什么问题吗？”'
+      ],
+      clues: ['shen_records']
+    },
+    'shen.debt': {
+      label: '三千元',
+      paras: [
+        '她的肩膀绷紧了。“……你连这个也知道了。”',
+        '“是，我挪用了三千块。我欠了债。舅舅说，明天早上让我自己说清楚。”她咬了咬嘴唇。“他没说要报警。他只是……很失望。”'
+      ],
+      clues: []
+    },
+    'shen.fiber': {
+      label: '这根纤维，你怎么解释？',
+      paras: [
+        '你把那根深红色羊毛纤维放在她面前。她看了很久，没有伸手去碰。',
+        '“我下午给唱片除尘的时候，可能蹭到了。”',
+        '“程先生，一根线说明不了什么。你在找一个人，可你找错了。”她的声音很稳，但手指在膝盖上收紧了。'
+      ],
+      clues: ['shen_denial']
+    },
+    'shen.sound': {
+      label: '枪响之前，楼上有什么声音？',
+      paras: [
+        '“九点四十的枪声很闷。”你说，“而且枪响之前，楼上有一种沙沙的声音。”',
+        '沈青禾抬起头。她的眼神第一次有些散。“雨声吧。”',
+        '“雨声不会从天花板里传下来。”',
+        '她沉默了很久，然后轻轻说：“程先生，你到底想说什么？”'
+      ],
+      clues: ['shen_nervous']
+    },
+    'gu.time': {
+      label: '死亡时间',
+      paras: [
+        '“尸温、尸僵，加上肝温，我初步判断在九点二十到九点五十之间。”他吐出一口烟。',
+        '“但书房太热了。壁炉一直烧着，室温二十八度，尸体会冷得慢。实际死亡时间可能更早。如果火是九点以后才烧旺的，误差可能有半小时。”'
+      ],
+      clues: ['gu_time']
+    },
+    'gu.wound': {
+      label: '枪伤',
+      paras: [
+        '“左胸，近距离，但不是接触射击。伤口周围没有火药灼痕，枪口至少离他一英尺。”他把烟按灭。“自杀的人不会把枪拿那么远。这是他杀。”'
+      ],
+      clues: ['gunshot']
+    },
+    'gu.shot': {
+      label: '九点四十的枪声',
+      paras: [
+        '“很闷。像隔着一层门板，或者隔着一层厚布。”',
+        '“我当时在图书馆，收音机开着。枪响之前，我什么也没听见。枪响之后，我才把收音机关掉。”'
+      ],
+      clues: ['radio']
+    },
+    'gu.old': {
+      label: '旧事与许南枝',
+      paras: [
+        '他的脸色沉了下来。“十年前，一台手术。出了事，他是唯一知道内情的人。”',
+        '“他拿这件事捏了我十年。我今晚来，是想跟他做个了断。不是那种了断。”他看了你一眼。“你可以怀疑我。但死亡时间不会替你撒谎。”',
+        '“至于许南枝……我们今晚一直在图书馆。你不必用那种眼神看我。是，我和她在一起。所以她的证词和我的证词，你都可以不信。但我们确实没有离开过。”'
+      ],
+      clues: ['gu_motive']
+    },
+    'gu.watch': {
+      label: '这块表停在九点零五',
+      paras: [
+        '“我检查过了。表蒙是从外向里碎的，他的左手腕有一块对应的淤青。摔下去的时候磕在桌脚上。”',
+        '“表停在九点零五。表不会说谎，但尸体所处的环境会。”他看了你一眼。“如果你能证明火是什么时候烧旺的，你就能证明他是什么时候死的。”'
+      ],
+      clues: []
+    },
+    'gu.letter': {
+      label: '陆鸿声留下过什么话？',
+      paras: [
+        '“他今天下午跟我说，他给沈青禾留了一条后路。”',
+        '“只要她明早肯认错，他就不报警。他连车票都给她买好了。”',
+        '顾行舟看着窗外的雨。“他这个人，一辈子强硬，到最后还是心软。”'
+      ],
+      clues: ['letter']
+    },
+    'luo.alibi': {
+      label: '今晚的行踪',
+      paras: [
+        '“停电以后我就去了地下室。发电机老毛病，我弄了一个多钟头。”',
+        '“九点半左右上来，跟你们打牌。后来枪响，我就跟你们一起上楼。”'
+      ],
+      clues: ['luo_alibi']
+    },
+    'luo.thud': {
+      label: '九点零五的闷响',
+      paras: [
+        '他的喉结动了一下。“……你怎么知道？”',
+        '“我是听见一声闷响，像什么东西倒了。我以为是雷，或者后山的落石。”他低下头。“我当时在酒窖里……喝了两口。你别告诉别人。”'
+      ],
+      clues: ['thud']
+    },
+    'luo.door': {
+      label: '书房的门',
+      paras: [
+        '“那门是弹簧锁，带上就锁，不用钥匙。钥匙插在里头，外面就打不开。”',
+        '“你们上来的时候，门是从里面锁着的，我只能撞开。”'
+      ],
+      clues: ['door']
+    },
+    'luo.sale': {
+      label: '山庄、唱片和后楼梯',
+      paras: [
+        '“陆先生要把山庄卖给许小姐的公司。我在这里干了三十年，他说新主人会留我。”他苦笑了一下。“留不留，谁知道呢。”',
+        '“阁楼上有几箱旧唱片，都是剧团的。沈小姐最近在整理。我不懂那些。”他想了想。“不过她倒是常往上跑。那些纸袋子，她比自己的衣服还熟。”',
+        '“后楼梯？从厨房后面的小门进去，能直接上二楼，不用经过客厅。左边是书房，右边是东厢。沈小姐常走那条路。她说大楼梯的灯坏了，怕黑。”'
+      ],
+      clues: ['backstairs']
+    },
+    'luo.after': {
+      label: '九点三十五，沈青禾离开过吗？',
+      paras: [
+        '“离开过。她说去拿披肩，走了大概四五分钟。”',
+        '“我那时候在洗牌，没太注意。她回来的时候有点喘，说楼梯太暗。”'
+      ],
+      clues: []
+    },
+    'luo.umbrella': {
+      label: '你的伞怎么是湿的？',
+      paras: [
+        '“我去看了看发电机棚，还有后山的排水沟。雨这么大，不看一眼不放心。”他顿了顿。“我没上山，也没过桥。你别多想。”'
+      ],
+      clues: []
+    },
+    'xu.quarrel': {
+      label: '晚餐时的争吵',
+      paras: [
+        '“我父亲的公司被他吞了。我来要个说法。”',
+        '“他说：‘明天你就知道谁说了算。’”她把烟折断。“我恨不得杀了他。但我没动手。你爱信不信。”'
+      ],
+      clues: ['xu_motive']
+    },
+    'xu.alibi': {
+      label: '九点四十，你在哪里？',
+      paras: [
+        '“我和顾行舟在图书馆。收音机开着，放的是《毛毛雨》。”',
+        '“枪响的时候，我们刚关掉收音机。然后一起上楼。”',
+        '“是，我们在一起。”她把断掉的烟扔进烟灰缸。“所以他的证词和我的证词，你都可以不信。但我们确实没离开过图书馆。”'
+      ],
+      clues: ['xu_alibi','affair']
+    },
+    'xu.shen': {
+      label: '沈青禾',
+      paras: [
+        '“那个姑娘？她一直很安静。晚餐时她一句话都没说。陆鸿声骂她的时候，她连头都没抬。”',
+        '她想了想。“不过，九点三十五左右，我去厨房倒水，看见她从后楼梯上去。走得很急，没看见我。”',
+        '“她上楼以后，往书房那边拐了。我当时以为她去找陆鸿声。”'
+      ],
+      clues: ['xu_saw']
+    },
+    'xu.gramophone': {
+      label: '留声机与山庄',
+      paras: [
+        '“陆鸿声的留声机？我没碰过。那玩意儿一放，整栋房子都听得见。”她看了你一眼。“你问这个干什么？难道九点四十那声枪响，是留声机放出来的？”',
+        '“我本来要买下这里，开一家疗养院。现在？”她看着窗外的雨。“出了人命，谁还买。”'
+      ],
+      clues: []
+    }
+  },
+
+  hints: [
+    '先别急着找动机。先问：陆鸿声到底是什么时候死的？尸体不会说谎，但它所在的环境会。',
+    '书房热得反常。高温会让尸冷变慢，顾行舟给出的死亡时间就会偏晚。再看死者手腕上的表——它停在 21:05。',
+    '如果陆鸿声在 21:05 就死了，21:40 的枪声是从哪来的？留声机的唱针为什么停在收尾槽？那张唱片最后一段是什么？',
+    '枪声是一张唱片。谁最熟悉陆鸿声的唱片，谁在 21:35 离开过客厅，谁又刚好穿着一件深红色开衫？',
+    '凶手是沈青禾。她用《雷雨》音效盘伪造了 21:40 的枪声，让自己在牌桌旁获得不在场证明。去指认她，并选择“留声机唱片”和“腕表与闷响”。'
+  ],
+
+  feedback: {
+    culprit: {
+      gu: '顾行舟有动机，也有医学知识。但他是第一个指出枪伤不是自杀的人；如果他是凶手，他不会拆穿自己布置的“自杀”。更重要的是，21:40 枪响时，他在图书馆。那声枪响本身才是关键。',
+      luo: '罗坤熟悉这栋房子，也有动机。但他不知道留声机上那张唱片，而且他主动说出了 21:05 的闷响——一个凶手不会把真正的时间交给别人。',
+      xu: '许南枝有动机，但她和顾行舟在图书馆。除非你认定他们合谋，否则她无法在 21:35 启动书房的留声机。'
+    },
+    methodLead: '你指认了沈青禾，但没有解释那声枪响。',
+    method: {
+      window: '窗户从里面闩着，窗台干燥。而且 21:40 枪响时，你们都在上楼之前就听到了声音——窗外没有人。',
+      lie: '顾行舟确实隐瞒了和许南枝的私情，但他没有理由替沈青禾作假。枪声是所有人一起听到的，不是他一个人说的。',
+      accident: '枪口离伤口至少一英尺，不是走火。而且 21:40 枪响时，陆鸿声已经死了。'
+    },
+    evidenceLead: '枪声的解释说得通。但你还缺一个能独立指出真实死亡时间的证据。',
+    evidence: {
+      temp: '顾行舟自己说过，书房的高温会让尸冷变慢，尸温只能给出一个偏晚的范围。它不能证明 21:05。',
+      door: '弹簧锁只能解释凶手怎么离开，不能说明死亡时间。',
+      will: '遗嘱说明动机，不能说明时间。'
+    }
+  },
+
+  summary: [
+    {label:'凶手', value:'沈青禾'},
+    {label:'真实死亡时间', value:'21:05'},
+    {label:'伪造的枪声', value:'21:40，留声机播放《雷雨》音效盘'},
+    {label:'动机', value:'伪造签名挪用三千元；新遗嘱剥夺继承权；害怕被揭发'},
+    {label:'关键证据', value:'停在 21:05 的腕表、罗坤听到的闷响、留声机里的音效盘、摇柄上的红色纤维、唱片目录上的借出记录、许南枝的目击'},
+    {label:'红鲱鱼', value:'顾行舟与许南枝的私情、罗坤偷酒、许南枝的威胁、山庄出售、弹簧锁密室。'}
+  ],
+
+  reveal: [
+    {
+      paras: [
+        '你没有看沈青禾。你看的是那张唱片。标签上“枪声”两个字，在灯下很清楚。',
+        '【21:00】',
+        '沈青禾从后楼梯上楼。她没有回自己的房间。书房的门虚掩着。陆鸿声坐在壁炉边，桌上摊着下午刚签的遗嘱，旁边是那本账本。',
+        '她跪下来求他。他没有骂她，只说：“明早，你自己说清楚。说完，你走。”',
+        '她不信。她看见他眼里的失望，觉得那比愤怒更可怕。',
+        '她看见了抽屉里的左轮手枪。',
+        '【21:05】',
+        '枪声被雷声吞掉了。陆鸿声倒下时，左手腕撞在桌脚上。表蒙碎了，指针停在九点零五。',
+        '沈青禾在原地站了很久。然后她开始布置。她忘了那本账本。她满脑子都是时间。',
+        '她把枪放在他右手边，让现场看起来像自杀。她往壁炉里添了三根松木。火会烧得很旺，房间会变热，尸体会冷得慢——法医给出的死亡时间就会往后推。',
+        '她从阁楼取来的《雷雨》音效盘已经放在唱盘上，发条上满。她不能现在启动它。她需要它等一会儿再响。'
+      ]
+    },
+    {
+      paras: [
+        '【21:30】',
+        '你下楼时，沈青禾和罗坤已经在牌桌旁。她看起来很平静，只是手指有点凉。',
+        '【21:35】',
+        '她站起来，说去拿披肩。她走后楼梯上楼，进了书房，放下唱针。唱片先放出风雨声。那声音和窗外的雨混在一起，像山谷里的回响。她回到客厅，刚好赶上发牌。',
+        '【21:40】',
+        '唱片里的枪声响了。它隔着门板，传进客厅，听起来闷闷的。',
+        '你们冲上楼。门是弹簧锁，已经锁上。罗坤撞开门。留声机还在转，唱针停在收尾槽。',
+        '你们看见尸体、枪、火，看见一个刚刚死去的人。只有那块表，停在九点零五。'
+      ]
+    },
+    {
+      paras: [
+        '顾行舟的尸温判断没有错，错的是那间房。火太旺，室温太高，尸体冷得太慢。他给出的时间，比真实死亡时间晚了半个多小时。',
+        '罗坤在酒窖里听到的闷响，不是雷。那是九点零五的枪声。',
+        '许南枝在九点三十五看见沈青禾从后楼梯上楼，往书房的方向走。沈青禾说她在房间里找披肩，可她的房间在东边，她却往北边去了。',
+        '留声机摇柄上的深红色纤维，和她开衫袖口的断口对得上。唱片目录上写着：“《雷雨》音效集，第三面，借出试听（沈），未还。”',
+        '你把这些东西一件一件放在桌上。沈青禾看着那张唱片，很久没有说话。'
+      ]
+    },
+    {
+      paras: [
+        '“我本来只想让他停下来。”她说。“他说明早让我自己说清楚。我知道那是什么意思。剧团、基金会、报纸……所有人都会知道。”',
+        '“他给你买了车票。”你说。',
+        '“是。”她的眼泪终于掉下来，“他给我买了车票。他说，等我从上海回来，这件事就当没发生过。”',
+        '“那你为什么……”',
+        '“我不信。”她说，“我从来不敢信他。”',
+        '天快亮的时候，雨停了。警察从山道上上来，带走了沈青禾。你站在门口，看见她回头看了一眼书房。留声机已经不转了。可那声枪响，还在每个人的耳朵里。'
+      ]
+    },
+    {
+      title: '案件回顾',
+      paras: [],
+      final: true
+    }
+  ]
+};
+
+var app = document.getElementById('app');
+var modal = document.getElementById('modal');
+var backBtn = document.getElementById('backBtn');
+var noteBtn = document.getElementById('noteBtn');
+var hintBtn = document.getElementById('hintBtn');
+var noteCount = document.getElementById('noteCount');
+var state;
+
+function has(key){ return !!state.clues[key]; }
+
+function addClue(key){
+  if (!DATA.clues[key] || state.clues[key]) return false;
+  state.clues[key] = true;
+  updateNoteCount();
+  return true;
+}
+
+function updateNoteCount(){
+  if (noteCount) noteCount.textContent = Object.keys(state.clues).length;
+}
+
+function para(text){
+  if (!text) return '';
+  if (text.charAt(0) === '【' && text.charAt(text.length - 1) === '】') {
+    return '<h3 class="time-mark">' + text + '</h3>';
+  }
+  if (text.charAt(0) === '“') {
+    return '<p class="dialogue">' + text + '</p>';
+  }
+  return '<p>' + text + '</p>';
+}
+
+function paras(arr){
+  var out = '';
+  if (!arr) return out;
+  for (var i = 0; i < arr.length; i++) out += para(arr[i]);
+  return out;
+}
+
+function kicker(text){
+  return '<div class="kicker">' + text + '</div>';
+}
+
+function section(text){
+  return '<div class="section-title"><span>' + text + '</span></div>';
+}
+
+function choice(label, act, arg, opts){
+  opts = opts || {};
+  var cls = 'choice';
+  if (opts.primary) cls += ' primary';
+  if (opts.ghost) cls += ' ghost';
+  var badge = opts.badge ? '<span class="badge">' + opts.badge + '</span>' : '';
+  var chev = opts.ghost ? '' : '<span class="chev">›</span>';
+  return '<button type="button" class="' + cls + '" data-act="' + act + '" data-arg="' + (arg || '') + '">' +
+    '<span class="choice-label">' + label + '</span>' + badge + chev + '</button>';
+}
+
+function clueCards(keys){
+  var out = '';
+  for (var i = 0; i < keys.length; i++) {
+    var c = DATA.clues[keys[i]];
+    if (!c) continue;
+    out += '<div class="clue-card"><div class="clue-kicker">新线索 · ' + c.cat + '</div><p>' + c.text + '</p></div>';
+  }
+  return out;
+}
+
+function stepsHTML(step){
+  var out = '<div class="steps" aria-hidden="true">';
+  for (var i = 1; i <= 3; i++) {
+    out += '<span class="' + (i < step ? 'done' : (i === step ? 'on' : '')) + '"></span>';
+  }
+  return out + '</div>';
+}
+
+/* ---------------- 页面片段 ---------------- */
+
+function introHTML(page){
+  var out = '<section class="screen">';
+  if (page === 0) {
+    out += '<div class="seal" aria-hidden="true">雨</div>';
+    out += kicker('民国二十五年 · 江南');
+    out += '<h1 class="display">雨夜留声</h1>';
+    out += '<p class="subtitle">一桩山庄密室谋杀案</p>';
+    out += '<div class="rule-line"></div>';
+    out += '<div class="prose">' + paras(DATA.intro.story) + '</div>';
+    out += '<div class="actions">' + choice('走进山庄', 'intro', '1', {primary:true}) + '</div>';
+    out += '<p class="footnote">单文件 · 离线可玩 · 约 5–10 分钟</p>';
+  } else if (page === 1) {
+    out += kicker('人物');
+    out += '<h2>山庄里的四个人</h2>';
+    out += '<div class="card">';
+    out += '<div class="person"><div class="person-name">沈青禾<span class="person-role">二十六岁 · 外甥女兼秘书</span></div><p>' + DATA.people.shen.blurb + '</p></div>';
+    out += '<div class="person"><div class="person-name">顾行舟<span class="person-role">四十二岁 · 医生 · 陆鸿声的老友</span></div><p>' + DATA.people.gu.blurb + '</p></div>';
+    out += '<div class="person"><div class="person-name">罗坤<span class="person-role">五十岁 · 山庄管家</span></div><p>' + DATA.people.luo.blurb + '</p></div>';
+    out += '<div class="person"><div class="person-name">许南枝<span class="person-role">三十五岁 · 生意伙伴</span></div><p>' + DATA.people.xu.blurb + '</p></div>';
+    out += '</div>';
+    out += '<div class="actions">' + choice('继续', 'intro', '2', {primary:true}) + choice('上一步', 'intro', '0', {ghost:true}) + '</div>';
+  } else {
+    out += kicker('规则');
+    out += '<h2>怎么玩</h2>';
+    out += '<div class="card"><ul class="rules">';
+    out += '<li>点按选项推进，不需要输入命令。</li>';
+    out += '<li>顶部「笔记」随时查看已经找到的线索。</li>';
+    out += '<li>顶部「提示」获取分层提示；最后一条会直接说出凶手。</li>';
+    out += '<li>随时可以指认，不必看遍每一个角落。</li>';
+    out += '</ul></div>';
+    out += '<div class="prose"><p>警察天亮才到。你有的是时间，但没有第二次机会。</p></div>';
+    out += '<p class="note">指认错误可以重来，但会记在调查记录里。</p>';
+    out += '<div class="actions">' + choice('开始调查', 'start', '', {primary:true}) + choice('上一步', 'intro', '1', {ghost:true}) + '</div>';
+  }
+  return out + '</section>';
+}
+
+function hubHTML(){
+  var out = '<section class="screen">';
+  out += kicker('听雨山庄 · 深夜 21:55');
+  out += '<h1 class="hub-title">天亮之前，你还有时间。</h1>';
+  out += '<div class="prose"><p>雨点敲着窗。客厅里的钟走得很慢。</p></div>';
+  out += section('调查');
+  out += choice(DATA.locations.study.hubLabel, 'location', 'study', {badge: state.seen['loc_study'] ? '已去过' : ''});
+  out += choice(DATA.locations.living.hubLabel, 'location', 'living', {badge: state.seen['loc_living'] ? '已去过' : ''});
+  out += choice(DATA.locations.shen.hubLabel, 'location', 'shen', {badge: state.seen['loc_shen'] ? '已去过' : ''});
+  out += choice(DATA.locations.basement.hubLabel, 'location', 'basement', {badge: state.seen['loc_basement'] ? '已去过' : ''});
+  out += section('交谈');
+  out += choice('沈青禾', 'interview', 'shen', {badge: state.seen['talk_shen'] ? '已谈过' : ''});
+  out += choice('顾行舟', 'interview', 'gu', {badge: state.seen['talk_gu'] ? '已谈过' : ''});
+  out += choice('罗坤', 'interview', 'luo', {badge: state.seen['talk_luo'] ? '已谈过' : ''});
+  out += choice('许南枝', 'interview', 'xu', {badge: state.seen['talk_xu'] ? '已谈过' : ''});
+  out += '<div class="actions">' + choice('指认凶手', 'accuse', '1', {primary:true}) + '</div>';
+  out += '<p class="note center">不必看遍每一个角落。你觉得够了，就随时指认。</p>';
+  out += choice('查看笔记', 'notebook', '', {ghost:true});
+  return out + '</section>';
+}
+
+function locationHTML(id){
+  var l = DATA.locations[id];
+  var out = '<section class="screen">';
+  out += kicker('调查 · ' + l.tag);
+  out += '<h2>' + l.name + '</h2>';
+  out += '<div class="prose">' + paras(l.desc) + '</div>';
+  out += section('查看');
+  for (var i = 0; i < l.actions.length; i++) {
+    var a = l.actions[i];
+    var asked = state.seen['detail_' + id + '.' + a.id];
+    out += choice(a.label, 'detail', id + '.' + a.id, {badge: asked ? '已查看' : ''});
+  }
+  out += choice('返回调查', 'hub', '', {ghost:true});
+  return out + '</section>';
+}
+
+function detailHTML(loc, detail){
+  var d = DATA.details[loc + '.' + detail];
+  if (!d) return hubHTML();
+  var newKeys = [];
+  function add(key){
+    if (addClue(key)) newKeys.push(key);
+  }
+  for (var i = 0; i < d.clues.length; i++) add(d.clues[i]);
+  var extra = [];
+  if (typeof d.after === 'function') extra = d.after(add);
+  var out = '<section class="screen">';
+  out += kicker('调查 · ' + DATA.locations[loc].name);
+  out += '<h2>' + d.title + '</h2>';
+  if (state.screen.already) out += '<p class="note">你再次查看了这里。</p>';
+  out += '<div class="prose">' + paras(d.paras);
+  if (extra && extra.length) out += paras(extra);
+  out += '</div>';
+  out += clueCards(newKeys);
+  out += '<div class="actions">' + choice('继续调查', 'location', loc, {primary:true}) + '</div>';
+  return out + '</section>';
+}
+
+function topicsFor(person){
+  var ids = [];
+  if (person === 'shen') {
+    ids = ['alibi','will','records','debt'];
+    if (has('fiber_match')) ids.push('fiber');
+    if (has('record') && has('muffled')) ids.push('sound');
+  } else if (person === 'gu') {
+    ids = ['time','wound','shot','old'];
+    if (has('watch')) ids.push('watch');
+    if (has('will')) ids.push('letter');
+  } else if (person === 'luo') {
+    ids = ['alibi','thud','door','sale','after','umbrella'];
+  } else if (person === 'xu') {
+    ids = ['quarrel','alibi','shen','gramophone'];
+  }
+  return ids;
+}
+
+function interviewHTML(id){
+  var p = DATA.people[id];
+  var ids = topicsFor(id);
+  var out = '<section class="screen">';
+  out += kicker('交谈 · ' + p.role);
+  out += '<h2>' + p.name + '</h2>';
+  out += '<div class="prose">' + paras(p.intro) + '</div>';
+  out += section('你想问');
+  for (var i = 0; i < ids.length; i++) {
+    var key = id + '.' + ids[i];
+    var t = DATA.topics[key];
+    var asked = state.seen['ask_' + key];
+    out += choice(t.label, 'topic', key, {badge: asked ? '已问' : ''});
+  }
+  out += choice('结束谈话', 'hub', '', {ghost:true});
+  return out + '</section>';
+}
+
+function topicHTML(person, topic){
+  var t = DATA.topics[person + '.' + topic];
+  if (!t) return interviewHTML(person);
+  var newKeys = [];
+  function add(key){
+    if (addClue(key)) newKeys.push(key);
+  }
+  for (var i = 0; i < t.clues.length; i++) add(t.clues[i]);
+  var extra = [];
+  if (typeof t.after === 'function') extra = t.after(add);
+  var out = '<section class="screen">';
+  out += kicker('交谈 · ' + DATA.people[person].name);
+  out += '<h2>' + t.label + '</h2>';
+  if (state.screen.already) out += '<p class="note">这个问题你已经问过了。</p>';
+  out += '<div class="prose">' + paras(t.paras);
+  if (extra && extra.length) out += paras(extra);
+  out += '</div>';
+  out += clueCards(newKeys);
+  out += choice('继续谈话', 'interview', person, {primary:true});
+  out += choice('返回调查', 'hub', '', {ghost:true});
+  return out + '</section>';
+}
+
+function accuseHTML(step){
+  var out = '<section class="screen">';
+  out += kicker('指认 · ' + step + ' / 3');
+  out += '<h2>指认</h2>';
+  out += stepsHTML(step);
+  if (step === 1) {
+    out += '<div class="prose"><p>你合上笔记本。客厅里的人都看着你。“我知道是谁杀了陆鸿声。”</p></div>';
+    out += '<div class="question">第一个问题：凶手是谁？</div>';
+    out += choice('沈青禾', 'accuseChoice', 'shen');
+    out += choice('顾行舟', 'accuseChoice', 'gu');
+    out += choice('罗坤', 'accuseChoice', 'luo');
+    out += choice('许南枝', 'accuseChoice', 'xu');
+  } else if (step === 2) {
+    out += '<div class="question">第二个问题：21:40 的枪声，是怎么回事？</div>';
+    out += choice('留声机播放了一张灌有枪声的唱片', 'accuseChoice', 'record');
+    out += choice('凶手从窗外开了一枪', 'accuseChoice', 'window');
+    out += choice('顾行舟替凶手作了伪证', 'accuseChoice', 'lie');
+    out += choice('陆鸿声自己走火', 'accuseChoice', 'accident');
+  } else {
+    out += '<div class="question">第三个问题：什么证据能证明陆鸿声真正的死亡时间？</div>';
+    out += choice('停在 21:05 的腕表，和罗坤听到的闷响', 'accuseChoice', 'time');
+    out += choice('顾行舟的尸温判断', 'accuseChoice', 'temp');
+    out += choice('书房门是弹簧锁', 'accuseChoice', 'door');
+    out += choice('新遗嘱的签署时间', 'accuseChoice', 'will');
+  }
+  out += choice('返回调查', 'hub', '', {ghost:true});
+  return out + '</section>';
+}
+
+function feedbackHTML(){
+  var f = state.feedback;
+  var out = '<section class="screen">';
+  out += kicker('指认 · 推理不成立');
+  out += '<h2>再想想。</h2>';
+  if (f.lead) out += '<div class="prose"><p>' + f.lead + '</p></div>';
+  out += '<div class="prose"><p>' + f.text + '</p></div>';
+  out += '<div class="actions">' + choice('再试一次', 'feedbackRetry', '', {primary:true}) + '</div>';
+  out += choice('返回调查', 'hub', '', {ghost:true});
+  return out + '</section>';
+}
+
+function caseSummary(){
+  var n = Object.keys(state.clues).length;
+  var rank = n >= 28 ? '你几乎看穿了山庄的每一道缝隙。' : '你抓住了足够多的细节。';
+  var out = '<div class="summary">';
+  for (var i = 0; i < DATA.summary.length; i++) {
+    out += '<div class="summary-row"><div class="summary-label">' + DATA.summary[i].label + '</div><div class="summary-value">' + DATA.summary[i].value + '</div></div>';
+  }
+  out += '</div>';
+  out += '<div class="summary stats"><div class="summary-row"><div class="summary-label">调查记录</div><div class="summary-value">' + n + ' 条线索 · ' + state.hintIndex + ' 次提示 · ' + state.wrong + ' 次错误判断</div></div></div>';
+  out += '<p class="rank">' + rank + '</p>';
+  out += '<p class="thanks">感谢游玩《雨夜留声》。</p>';
+  return out;
+}
+
+function revealHTML(page){
+  if (!DATA.reveal[page]) page = 0;
+  var r = DATA.reveal[page];
+  var out = '<section class="screen reveal">';
+  if (page === 0) {
+    out += kicker('揭底');
+    out += '<h1 class="display small">真相</h1>';
+  } else {
+    out += kicker('真相 · ' + (page + 1) + ' / ' + DATA.reveal.length);
+  }
+  if (r.title) out += '<h2>' + r.title + '</h2>';
+  if (r.paras && r.paras.length) out += '<div class="prose">' + paras(r.paras) + '</div>';
+  if (r.final) out += caseSummary();
+  if (page < DATA.reveal.length - 1) {
+    out += '<div class="actions">' + choice('继续', 'reveal', String(page + 1), {primary:true}) + '</div>';
+  } else {
+    out += '<div class="actions">' + choice('重新开始', 'restart', '', {primary:true}) + '</div>';
+    out += choice('查看笔记', 'notebook', '', {ghost:true});
+  }
+  return out + '</section>';
+}
+
+function screenHTML(){
+  var s = state.screen;
+  if (s.type === 'intro') return introHTML(s.page);
+  if (s.type === 'hub') return hubHTML();
+  if (s.type === 'location') return locationHTML(s.id);
+  if (s.type === 'detail') return detailHTML(s.loc, s.detail);
+  if (s.type === 'interview') return interviewHTML(s.id);
+  if (s.type === 'topic') return topicHTML(s.person, s.topic);
+  if (s.type === 'accuse') return accuseHTML(s.step);
+  if (s.type === 'feedback') return feedbackHTML();
+  if (s.type === 'reveal') return revealHTML(s.page);
+  return hubHTML();
+}
+
+/* ---------------- 导航 ---------------- */
+
+function renderHeader(){
+  var showTools = state.started && state.screen.type !== 'intro';
+  var showHint = showTools && state.screen.type !== 'reveal';
+  noteBtn.style.display = showTools ? 'inline-flex' : 'none';
+  hintBtn.style.display = showHint ? 'inline-flex' : 'none';
+  backBtn.style.display = state.back ? 'inline-flex' : 'none';
+  noteCount.textContent = Object.keys(state.clues).length;
+}
+
+function render(){
+  var html = screenHTML();
+  renderHeader();
+  app.innerHTML = html;
+  bindChoices();
+  window.scrollTo(0, 0);
+}
+
+function bindChoices(){
+  var nodes = app.querySelectorAll('[data-act]');
+  for (var i = 0; i < nodes.length; i++) {
+    nodes[i].onclick = function(){
+      handleAction(this.getAttribute('data-act'), this.getAttribute('data-arg'));
+    };
+  }
+}
+
+function handleAction(act, arg){
+  if (act === 'intro') goIntro(parseInt(arg, 10));
+  else if (act === 'start') startGame();
+  else if (act === 'hub') goHub();
+  else if (act === 'location') goLocation(arg);
+  else if (act === 'detail') {
+    var dp = arg.split('.');
+    goDetail(dp[0], dp[1]);
+  }
+  else if (act === 'interview') goInterview(arg);
+  else if (act === 'topic') {
+    var tp = arg.split('.');
+    goTopic(tp[0], tp[1]);
+  }
+  else if (act === 'accuse') goAccuse(parseInt(arg, 10));
+  else if (act === 'accuseChoice') handleAccuseChoice(arg);
+  else if (act === 'feedbackRetry') goAccuse(state.feedback.step);
+  else if (act === 'reveal') goReveal(parseInt(arg, 10));
+  else if (act === 'restart') resetGame();
+  else if (act === 'notebook') openNotebook();
+}
+
+function goIntro(page){
+  state.screen = {type:'intro', page:page};
+  state.back = page > 0 ? {type:'intro', page:page - 1} : null;
+  render();
+}
+
+function startGame(){
+  state.started = true;
+  goHub();
+}
+
+function goHub(){
+  state.screen = {type:'hub'};
+  state.back = null;
+  render();
+}
+
+function goLocation(id){
+  state.seen['loc_' + id] = true;
+  state.screen = {type:'location', id:id};
+  state.back = {type:'hub'};
+  render();
+}
+
+function goDetail(loc, detail){
+  var key = 'detail_' + loc + '.' + detail;
+  var already = !!state.seen[key];
+  state.seen[key] = true;
+  state.screen = {type:'detail', loc:loc, detail:detail, already:already};
+  state.back = {type:'location', id:loc};
+  render();
+}
+
+function goInterview(id){
+  state.seen['talk_' + id] = true;
+  state.screen = {type:'interview', id:id};
+  state.back = {type:'hub'};
+  render();
+}
+
+function goTopic(person, topic){
+  var key = 'ask_' + person + '.' + topic;
+  var already = !!state.seen[key];
+  state.seen[key] = true;
+  state.screen = {type:'topic', person:person, topic:topic, already:already};
+  state.back = {type:'interview', id:person};
+  render();
+}
+
+function goAccuse(step){
+  state.screen = {type:'accuse', step:step};
+  state.back = {type:'hub'};
+  render();
+}
+
+function handleAccuseChoice(value){
+  var step = state.screen.step;
+  if (step === 1) {
+    if (value === 'shen') goAccuse(2);
+    else goFeedback(1, '', DATA.feedback.culprit[value]);
+  } else if (step === 2) {
+    if (value === 'record') goAccuse(3);
+    else goFeedback(2, DATA.feedback.methodLead, DATA.feedback.method[value]);
+  } else {
+    if (value === 'time') goReveal(0);
+    else goFeedback(3, DATA.feedback.evidenceLead, DATA.feedback.evidence[value]);
+  }
+}
+
+function goFeedback(step, lead, text){
+  state.wrong++;
+  state.feedback = {step:step, lead:lead || '', text:text || ''};
+  state.screen = {type:'feedback'};
+  state.back = {type:'hub'};
+  render();
+}
+
+function goReveal(page){
+  state.screen = {type:'reveal', page:page};
+  state.back = null;
+  state.finished = (page === DATA.reveal.length - 1);
+  render();
+}
+
+function goBack(){
+  var b = state.back;
+  if (!b) return;
+  if (b.type === 'hub') goHub();
+  else if (b.type === 'location') goLocation(b.id);
+  else if (b.type === 'interview') goInterview(b.id);
+  else if (b.type === 'intro') goIntro(b.page);
+}
+
+/* ---------------- 笔记与提示 ---------------- */
+
+function openModal(html){
+  modal.innerHTML = '<div class="sheet" role="dialog" aria-modal="true">' + html + '</div>';
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+  bindModal();
+}
+
+function closeModal(){
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  modal.innerHTML = '';
+  document.body.classList.remove('modal-open');
+}
+
+function bindModal(){
+  var closeBtns = modal.querySelectorAll('[data-close]');
+  for (var i = 0; i < closeBtns.length; i++) {
+    closeBtns[i].onclick = closeModal;
+  }
+  var next = modal.querySelector('[data-hint-next]');
+  if (next) next.onclick = openHint;
+}
+
+function openNotebook(){
+  var keys = Object.keys(state.clues);
+  var groups = ['已知','现场','时间','人物','动机'];
+  var body = '';
+  var num = 0;
+  for (var g = 0; g < groups.length; g++) {
+    var items = [];
+    for (var i = 0; i < keys.length; i++) {
+      var c = DATA.clues[keys[i]];
+      if (c && c.cat === groups[g]) items.push(c);
+    }
+    if (!items.length) continue;
+    body += '<div class="note-group"><h4>' + groups[g] + '</h4>';
+    for (var j = 0; j < items.length; j++) {
+      num++;
+      body += '<div class="note-item"><span class="note-num">' + num + '.</span><span>' + items[j].text + '</span></div>';
+    }
+    body += '</div>';
+  }
+  if (!body) body = '<p class="note">笔记本还是空的。</p>';
+  var html = '<div class="sheet-head"><div class="sheet-title">笔记</div><button type="button" class="sheet-close" data-close="1" aria-label="关闭">×</button></div>';
+  html += '<div class="sheet-body">' + body + '</div>';
+  html += '<div class="sheet-foot"><div class="sheet-count">共 ' + num + ' 条线索</div><button type="button" class="choice primary" data-close="1">合上笔记</button></div>';
+  openModal(html);
+}
+
+function openHint(){
+  var idx = state.hintIndex;
+  var title;
+  var body;
+  var foot;
+  if (idx < DATA.hints.length) {
+    state.hintIndex++;
+    title = '提示 ' + state.hintIndex + ' / ' + DATA.hints.length;
+    body = '<div class="hint-meta">分层提示</div><p class="hint-text">' + DATA.hints[idx] + '</p>';
+    body += '<p class="note">提示会逐条推进；最后一条会直接说出凶手。</p>';
+    if (state.hintIndex < DATA.hints.length) {
+      foot = '<button type="button" class="choice" data-hint-next="1">下一条提示<span class="chev">›</span></button>';
+    } else {
+      foot = '<button type="button" class="choice primary" data-close="1">知道了</button>';
+    }
+  } else {
+    title = '提示';
+    body = '<p class="hint-text">没有更多提示了。</p>';
+    foot = '<button type="button" class="choice primary" data-close="1">合上</button>';
+  }
+  var html = '<div class="sheet-head"><div class="sheet-title">' + title + '</div><button type="button" class="sheet-close" data-close="1" aria-label="关闭">×</button></div>';
+  html += '<div class="sheet-body">' + body + '</div>';
+  html += '<div class="sheet-foot">' + foot + '</div>';
+  openModal(html);
+}
+
+/* ---------------- 初始化 ---------------- */
+
+function resetGame(){
+  state = {
+    started: false,
+    screen: {type:'intro', page:0},
+    back: null,
+    clues: {},
+    seen: {},
+    hintIndex: 0,
+    wrong: 0,
+    finished: false,
+    feedback: null
+  };
+  closeModal();
+  addClue('self_alibi');
+  addClue('self_absence');
+  goIntro(0);
+}
+
+backBtn.onclick = goBack;
+noteBtn.onclick = openNotebook;
+hintBtn.onclick = openHint;
+modal.onclick = function(e){
+  if (e.target === modal) closeModal();
+};
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') closeModal();
+});
+
+resetGame();
+</script>
+</body>
+</html>
